@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { TrendingUp, Download, Clock, AlertTriangle, CheckCircle, FileText, Table, Image } from 'lucide-react-native';
@@ -15,7 +15,6 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import * as Print from 'expo-print';
 import { captureRef } from 'react-native-view-shot';
-import { useRef } from 'react';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -188,7 +187,7 @@ export default function HomeScreen() {
     });
     
     // Add QuickBooks import instructions
-    csvContent += '\n\nQuickBooks Import Instructions:\n';
+    csvContent += '\nQuickBooks Import Instructions:\n';
     csvContent += '1. Open QuickBooks\n';
     csvContent += '2. Go to File > Import > Excel/CSV\n';
     csvContent += '3. Select this CSV file\n';
