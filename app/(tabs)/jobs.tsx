@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Calendar, List } from 'lucide-react-native';
@@ -69,6 +69,20 @@ export default function JobsScreen() {
     </TouchableOpacity>
   );
 
+  // Render empty state for list view
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyStateText}>No jobs found</Text>
+      <Button 
+        title="Add New Job" 
+        onPress={handleAddJob} 
+        variant="primary"
+        size="md"
+        style={styles.emptyStateButton}
+      />
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <Header 
@@ -79,11 +93,7 @@ export default function JobsScreen() {
       />
       
       <View style={styles.filtersContainer}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filtersScrollContent}
-        >
+        <View style={styles.filtersScrollContent}>
           <TouchableOpacity
             style={[
               styles.filterButton,
@@ -168,7 +178,7 @@ export default function JobsScreen() {
               Cancelled
             </Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
       </View>
       
       {viewMode === 'calendar' ? (
@@ -178,38 +188,21 @@ export default function JobsScreen() {
             selectedDate={selectedDate}
           />
           
-          <ScrollView 
-            style={styles.dailyJobsContainer}
-            contentContainerStyle={styles.dailyJobsContent}
-            showsVerticalScrollIndicator={false}
-          >
+          <View style={styles.dailyJobsContainer}>
             <DailyJobsList 
               date={selectedDate}
               jobs={filteredJobsForSelectedDate}
             />
-          </ScrollView>
+          </View>
         </View>
       ) : (
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
+        <View style={styles.listContainer}>
           {sortedJobs.length > 0 ? (
             sortedJobs.map((job) => <JobCard key={job.id} job={job} />)
           ) : (
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateText}>No jobs found</Text>
-              <Button 
-                title="Add New Job" 
-                onPress={handleAddJob} 
-                variant="primary"
-                size="md"
-                style={styles.emptyStateButton}
-              />
-            </View>
+            renderEmptyState()
           )}
-        </ScrollView>
+        </View>
       )}
     </SafeAreaView>
   );
@@ -226,9 +219,11 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.gray[200],
   },
   filtersScrollContent: {
+    flexDirection: 'row',
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
     gap: theme.spacing.sm,
+    flexWrap: 'wrap',
   },
   filterButton: {
     paddingHorizontal: theme.spacing.md,
@@ -250,12 +245,9 @@ const styles = StyleSheet.create({
   viewToggle: {
     padding: theme.spacing.xs,
   },
-  scrollView: {
+  listContainer: {
     flex: 1,
-  },
-  scrollContent: {
     padding: theme.spacing.md,
-    paddingBottom: theme.spacing.xxl,
   },
   emptyState: {
     padding: theme.spacing.xl,
@@ -284,8 +276,5 @@ const styles = StyleSheet.create({
   dailyJobsContainer: {
     flex: 1,
     marginTop: theme.spacing.md,
-  },
-  dailyJobsContent: {
-    paddingBottom: theme.spacing.xxl,
   },
 });

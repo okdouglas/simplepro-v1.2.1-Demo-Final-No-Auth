@@ -52,6 +52,18 @@ export default function DailyJobsList({ date, jobs }: DailyJobsListProps) {
     return a.scheduledTime.localeCompare(b.scheduledTime);
   });
   
+  // Render empty state
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyStateText}>No jobs scheduled for this date</Text>
+    </View>
+  );
+  
+  // Render job item
+  const renderJobItem = ({ item }: { item: Job }) => (
+    <JobCard job={item} />
+  );
+  
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -62,14 +74,12 @@ export default function DailyJobsList({ date, jobs }: DailyJobsListProps) {
       </View>
       
       {jobs.length === 0 ? (
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyStateText}>No jobs scheduled for this date</Text>
-        </View>
+        renderEmptyState()
       ) : (
         <FlatList
           data={sortedJobs}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <JobCard job={item} />}
+          renderItem={renderJobItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
         />

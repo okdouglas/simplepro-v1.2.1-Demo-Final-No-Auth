@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { ChevronLeft, ChevronRight, FileText } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 import { theme } from '@/constants/theme';
@@ -45,12 +45,14 @@ export default function CalendarView({ onDateSelect, selectedDate }: CalendarVie
       days.push({ date: currentDate, isCurrentMonth: true });
     }
     
-    // Add days from next month to complete the last week
+    // Add days from next month to complete the last week (only add enough to complete the row)
     const lastDayOfWeek = lastDay.getDay();
-    for (let i = 1; i < 7 - lastDayOfWeek; i++) {
-      const nextMonthDay = new Date(lastDay);
-      nextMonthDay.setDate(nextMonthDay.getDate() + i);
-      days.push({ date: nextMonthDay, isCurrentMonth: false });
+    if (lastDayOfWeek < 6) { // Only add if not Saturday (6)
+      for (let i = 1; i <= 6 - lastDayOfWeek; i++) {
+        const nextMonthDay = new Date(lastDay);
+        nextMonthDay.setDate(nextMonthDay.getDate() + i);
+        days.push({ date: nextMonthDay, isCurrentMonth: false });
+      }
     }
     
     setCalendarDays(days);

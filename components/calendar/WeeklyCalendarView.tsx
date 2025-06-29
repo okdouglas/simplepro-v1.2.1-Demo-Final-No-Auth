@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 import { theme } from '@/constants/theme';
@@ -122,6 +122,95 @@ export default function WeeklyCalendarView({
     return date.toLocaleString('default', { weekday: compact ? 'narrow' : 'short' });
   };
   
+  // Render day cell
+  const renderDayCell = (day: Date, index: number) => {
+    const jobsForDay = getJobsForDate(day);
+    const hasJobs = jobsForDay.length > 0;
+    
+    return (
+      <TouchableOpacity
+        key={index}
+        style={[
+          styles.dayCell,
+          isToday(day) && styles.todayCell,
+          isSelected(day) && styles.selectedCell,
+        ]}
+        onPress={() => handleDateSelect(day)}
+      >
+        <Text style={[
+          styles.dayName,
+          isToday(day) && styles.todayText,
+          isSelected(day) && styles.selectedText,
+        ]}>
+          {getDayName(day)}
+        </Text>
+        
+        <View style={[
+          styles.dateCircle,
+          isToday(day) && styles.todayCircle,
+          isSelected(day) && styles.selectedCircle,
+        ]}>
+          <Text style={[
+            styles.dateText,
+            isToday(day) && styles.todayDateText,
+            isSelected(day) && styles.selectedDateText,
+          ]}>
+            {day.getDate()}
+          </Text>
+        </View>
+        
+        {hasJobs && (
+          <View style={styles.jobIndicatorContainer}>
+            {jobsForDay.length > 2 ? (
+              <View style={styles.multipleJobsIndicator}>
+                <Text style={styles.jobCountText}>{jobsForDay.length}</Text>
+              </View>
+            ) : (
+              jobsForDay.slice(0, 2).map((job, jobIndex) => (
+                <View 
+                  key={jobIndex} 
+                  style={[
+                    styles.jobIndicator,
+                    job.priority === 'urgent' && { backgroundColor: colors.red[500] },
+                    job.priority === 'high' && { backgroundColor: colors.orange[500] },
+                    job.priority === 'medium' && { backgroundColor: colors.yellow[500] },
+                    job.priority === 'low' && { backgroundColor: colors.green[500] },
+                    job.status === 'completed' && { backgroundColor: colors.green[500] },
+                    job.status === 'cancelled' && { backgroundColor: colors.gray[400] },
+                  ]}
+                />
+              ))
+            )}
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  };
+  
+  // Render job item
+  const renderJobItem = ({ item, index }: { item: Job; index: number }) => (
+    <TouchableOpacity 
+      key={index}
+      style={styles.jobItem}
+      onPress={() => router.push(`/jobs/${item.id}`)}
+    >
+      <View style={[
+        styles.jobPriorityIndicator,
+        item.priority === 'urgent' && { backgroundColor: colors.red[500] },
+        item.priority === 'high' && { backgroundColor: colors.orange[500] },
+        item.priority === 'medium' && { backgroundColor: colors.yellow[500] },
+        item.priority === 'low' && { backgroundColor: colors.green[500] },
+      ]} />
+      <View style={styles.jobDetails}>
+        <Text style={styles.jobTime}>{item.scheduledTime}</Text>
+        <Text style={styles.jobTitle} numberOfLines={1}>{item.title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+  
+  // Get selected day jobs
+  const selectedDayJobs = selectedDate ? getJobsByDate(selectedDate).slice(0, 3) : [];
+  
   return (
     <View style={[styles.container, compact && styles.compactContainer]}>
       <View style={styles.header}>
@@ -137,69 +226,7 @@ export default function WeeklyCalendarView({
       </View>
       
       <View style={styles.daysContainer}>
-        {weekDays.map((day, index) => {
-          const jobsForDay = getJobsForDate(day);
-          const hasJobs = jobsForDay.length > 0;
-          
-          return (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.dayCell,
-                isToday(day) && styles.todayCell,
-                isSelected(day) && styles.selectedCell,
-              ]}
-              onPress={() => handleDateSelect(day)}
-            >
-              <Text style={[
-                styles.dayName,
-                isToday(day) && styles.todayText,
-                isSelected(day) && styles.selectedText,
-              ]}>
-                {getDayName(day)}
-              </Text>
-              
-              <View style={[
-                styles.dateCircle,
-                isToday(day) && styles.todayCircle,
-                isSelected(day) && styles.selectedCircle,
-              ]}>
-                <Text style={[
-                  styles.dateText,
-                  isToday(day) && styles.todayDateText,
-                  isSelected(day) && styles.selectedDateText,
-                ]}>
-                  {day.getDate()}
-                </Text>
-              </View>
-              
-              {hasJobs && (
-                <View style={styles.jobIndicatorContainer}>
-                  {jobsForDay.length > 2 ? (
-                    <View style={styles.multipleJobsIndicator}>
-                      <Text style={styles.jobCountText}>{jobsForDay.length}</Text>
-                    </View>
-                  ) : (
-                    jobsForDay.slice(0, 2).map((job, jobIndex) => (
-                      <View 
-                        key={jobIndex} 
-                        style={[
-                          styles.jobIndicator,
-                          job.priority === 'urgent' && { backgroundColor: colors.red[500] },
-                          job.priority === 'high' && { backgroundColor: colors.orange[500] },
-                          job.priority === 'medium' && { backgroundColor: colors.yellow[500] },
-                          job.priority === 'low' && { backgroundColor: colors.green[500] },
-                          job.status === 'completed' && { backgroundColor: colors.green[500] },
-                          job.status === 'cancelled' && { backgroundColor: colors.gray[400] },
-                        ]}
-                      />
-                    ))
-                  )}
-                </View>
-              )}
-            </TouchableOpacity>
-          );
-        })}
+        {weekDays.map((day, index) => renderDayCell(day, index))}
       </View>
       
       {!compact && selectedDate && (
@@ -212,27 +239,9 @@ export default function WeeklyCalendarView({
             })}
           </Text>
           
-          {getJobsByDate(selectedDate).length > 0 ? (
+          {selectedDayJobs.length > 0 ? (
             <View style={styles.jobsList}>
-              {getJobsByDate(selectedDate).slice(0, 3).map((job, index) => (
-                <TouchableOpacity 
-                  key={index}
-                  style={styles.jobItem}
-                  onPress={() => router.push(`/jobs/${job.id}`)}
-                >
-                  <View style={[
-                    styles.jobPriorityIndicator,
-                    job.priority === 'urgent' && { backgroundColor: colors.red[500] },
-                    job.priority === 'high' && { backgroundColor: colors.orange[500] },
-                    job.priority === 'medium' && { backgroundColor: colors.yellow[500] },
-                    job.priority === 'low' && { backgroundColor: colors.green[500] },
-                  ]} />
-                  <View style={styles.jobDetails}>
-                    <Text style={styles.jobTime}>{job.scheduledTime}</Text>
-                    <Text style={styles.jobTitle} numberOfLines={1}>{job.title}</Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
+              {selectedDayJobs.map((job, index) => renderJobItem({ item: job, index }))}
               
               {getJobsByDate(selectedDate).length > 3 && (
                 <TouchableOpacity 
