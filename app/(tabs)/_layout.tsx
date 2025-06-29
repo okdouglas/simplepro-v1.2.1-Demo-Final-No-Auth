@@ -101,11 +101,17 @@ export default function TabLayout() {
         },
       })}
     >
-      {/* Tab order: Dashboard, Quotes, Jobs, Customers, Pipeline, Profile */}
+      {/* Tab order: Dashboard, Customers, Quotes, Jobs, Pipeline, Profile */}
       <Tabs.Screen
         name="index"
         options={{
           title: 'Dashboard',
+        }}
+      />
+      <Tabs.Screen
+        name="customers"
+        options={{
+          title: 'Customers',
         }}
       />
       <Tabs.Screen
@@ -119,12 +125,6 @@ export default function TabLayout() {
         name="jobs"
         options={{
           title: 'Jobs',
-        }}
-      />
-      <Tabs.Screen
-        name="customers"
-        options={{
-          title: 'Customers',
         }}
       />
       <Tabs.Screen
