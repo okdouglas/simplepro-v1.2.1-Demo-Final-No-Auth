@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Home, FileText, Briefcase, Users, BarChart3 } from 'lucide-react-native';
+import { Home, FileText, Briefcase, Users, BarChart3, User } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 import { theme } from '@/constants/theme';
 import { TouchableOpacity, StyleSheet, View, Text } from 'react-native';
@@ -30,6 +30,8 @@ const TabBarIcon = ({ name, color, size }) => {
       return <Briefcase size={size} color={color} />;
     case 'pipeline':
       return <BarChart3 size={size} color={color} />;
+    case 'profile':
+      return <User size={size} color={color} />;
     default:
       return null;
   }
@@ -51,9 +53,10 @@ export default function TabLayout() {
           paddingTop: 8,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '500',
+          fontSize: 0, // Hide labels by setting font size to 0
+          height: 0,
         },
+        tabBarShowLabel: false, // Explicitly hide labels
         headerStyle: {
           backgroundColor: colors.white,
           borderBottomWidth: 1,
@@ -102,21 +105,12 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Dashboard',
-          tabBarLabel: 'Dashboard',
-        }}
-      />
-      <Tabs.Screen
-        name="customers"
-        options={{
-          title: 'Customers',
-          tabBarLabel: 'Customers',
         }}
       />
       <Tabs.Screen
         name="quotes"
         options={{
           title: 'Quotes',
-          tabBarLabel: 'Quotes',
           tabBarActiveTintColor: colors.white, // White text for quotes tab when active
         }}
       />
@@ -124,14 +118,24 @@ export default function TabLayout() {
         name="jobs"
         options={{
           title: 'Jobs',
-          tabBarLabel: 'Jobs',
+        }}
+      />
+      <Tabs.Screen
+        name="customers"
+        options={{
+          title: 'Customers',
         }}
       />
       <Tabs.Screen
         name="pipeline"
         options={{
           title: 'Financials',
-          tabBarLabel: 'Financials',
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
         }}
       />
     </Tabs>
