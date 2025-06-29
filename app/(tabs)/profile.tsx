@@ -20,6 +20,7 @@ import { colors } from '@/constants/colors';
 import { theme } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useBusinessStore } from '@/store/businessStore';
+import Header from '@/components/Header';
 
 // SimplePro logo URL
 const LOGO_URL = "https://i.imgur.com/JGUmZ5F.png";
@@ -46,12 +47,7 @@ export default function ProfileScreen() {
       style={[styles.container, { backgroundColor: themeColors.background }]} 
       edges={['top']}
     >
-      <View style={[styles.header, { backgroundColor: themeColors.card, borderBottomColor: themeColors.border }]}>
-        <View style={styles.headerTitleContainer}>
-          <Image source={{ uri: LOGO_URL }} style={styles.logo} />
-          <Text style={[styles.headerTitle, { color: themeColors.text }]}>Profile</Text>
-        </View>
-      </View>
+      <Header title="Profile" />
       
       <ScrollView 
         style={styles.scrollView}
@@ -252,24 +248,6 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    padding: theme.spacing.md,
-    borderBottomWidth: 1,
-    height: 64, // Fixed height for consistency
-  },
-  headerTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 32,
-    height: 32,
-    marginRight: theme.spacing.sm,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
   },
   scrollView: {
     flex: 1,

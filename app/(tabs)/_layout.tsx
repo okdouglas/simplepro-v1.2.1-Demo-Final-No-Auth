@@ -57,44 +57,7 @@ export default function TabLayout() {
           height: 0,
         },
         tabBarShowLabel: false, // Explicitly hide labels
-        headerStyle: {
-          backgroundColor: colors.white,
-          borderBottomWidth: 1,
-          borderBottomColor: colors.gray[200],
-          height: 64, // Fixed height for consistency
-        },
-        headerTitleStyle: {
-          fontWeight: '600',
-          color: colors.text,
-          fontSize: 18,
-        },
-        headerShadowVisible: false,
-        headerTitle: ({ children }) => {
-          // Always show logo with title
-          return (
-            <View style={styles.headerTitleContainer}>
-              <Image source={{ uri: LOGO_URL }} style={styles.logo} />
-              {children ? (
-                <>
-                  <View style={[styles.titleSeparator, { backgroundColor: colors.gray[300] }]} />
-                  <Text style={[styles.headerText, { color: colors.text }]}>{children}</Text>
-                </>
-              ) : (
-                <Text style={[styles.headerText, { color: colors.text }]}>SimplePro</Text>
-              )}
-            </View>
-          );
-        },
-        headerRight: () => (
-          <TouchableOpacity
-            style={styles.notificationButton}
-            onPress={() => router.push('/notifications')}
-          >
-            <View style={styles.notificationIcon}>
-              <View style={styles.notificationBadge} />
-            </View>
-          </TouchableOpacity>
-        ),
+        headerShown: false, // Remove the global header
         tabBarIcon: ({ color, size }) => {
           const name = route.name;
           return <TabBarIcon name={name} color={color} size={size} />;
@@ -144,43 +107,6 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  headerTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  logo: {
-    width: 28,
-    height: 28,
-    resizeMode: 'contain',
-  },
-  titleSeparator: {
-    width: 1,
-    height: 16,
-    marginHorizontal: 8,
-  },
-  notificationButton: {
-    padding: 8,
-    marginRight: 8,
-  },
-  notificationIcon: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.primary,
-  },
   quotesIconContainer: {
     backgroundColor: '#4CAF50', // Green color for the bubble
     width: 36,
