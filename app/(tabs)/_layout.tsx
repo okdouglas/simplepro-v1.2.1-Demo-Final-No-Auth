@@ -8,12 +8,39 @@ import { useRouter } from 'expo-router';
 import { LOGO_URL } from '@/constants/logo';
 import { Image } from 'react-native';
 
+// Custom tab bar icon component for the Quotes tab with green bubble
+const TabBarIcon = ({ name, color, size }) => {
+  const isQuotes = name === 'quotes';
+  
+  if (isQuotes) {
+    return (
+      <View style={styles.quotesIconContainer}>
+        <FileText size={size - 4} color={colors.white} />
+      </View>
+    );
+  }
+  
+  // Regular icons for other tabs
+  switch (name) {
+    case 'index':
+      return <Home size={size} color={color} />;
+    case 'customers':
+      return <Users size={size} color={color} />;
+    case 'jobs':
+      return <Briefcase size={size} color={color} />;
+    case 'pipeline':
+      return <BarChart3 size={size} color={color} />;
+    default:
+      return null;
+  }
+};
+
 export default function TabLayout() {
   const router = useRouter();
 
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.gray[500],
         tabBarStyle: {
@@ -65,45 +92,45 @@ export default function TabLayout() {
             </View>
           </TouchableOpacity>
         ),
-      }}
+        tabBarIcon: ({ color, size }) => {
+          const name = route.name;
+          return <TabBarIcon name={name} color={color} size={size} />;
+        },
+      })}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
           tabBarLabel: 'Dashboard',
-        }}
-      />
-      <Tabs.Screen
-        name="quotes"
-        options={{
-          title: 'Quotes',
-          tabBarIcon: ({ color }) => <FileText size={24} color={color} />,
-          tabBarLabel: 'Quotes',
-        }}
-      />
-      <Tabs.Screen
-        name="jobs"
-        options={{
-          title: 'Jobs',
-          tabBarIcon: ({ color }) => <Briefcase size={24} color={color} />,
-          tabBarLabel: 'Jobs',
         }}
       />
       <Tabs.Screen
         name="customers"
         options={{
           title: 'Customers',
-          tabBarIcon: ({ color }) => <Users size={24} color={color} />,
           tabBarLabel: 'Customers',
+        }}
+      />
+      <Tabs.Screen
+        name="quotes"
+        options={{
+          title: 'Quotes',
+          tabBarLabel: 'Quotes',
+          tabBarActiveTintColor: colors.white, // White text for quotes tab when active
+        }}
+      />
+      <Tabs.Screen
+        name="jobs"
+        options={{
+          title: 'Jobs',
+          tabBarLabel: 'Jobs',
         }}
       />
       <Tabs.Screen
         name="pipeline"
         options={{
           title: 'Financials',
-          tabBarIcon: ({ color }) => <BarChart3 size={24} color={color} />,
           tabBarLabel: 'Financials',
         }}
       />
@@ -148,5 +175,14 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     backgroundColor: colors.primary,
+  },
+  quotesIconContainer: {
+    backgroundColor: '#4CAF50', // Green color for the bubble
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: -4, // Adjust position to align with other icons
   },
 });
