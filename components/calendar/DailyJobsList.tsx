@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     color: colors.gray[600],
   },
   listContent: {
-    paddingBottom: theme.spacing.xl,
+    paddingBottom: theme.spacing.xl * 2, // Add extra padding at the bottom to prevent content being cut off
   },
   emptyState: {
     padding: theme.spacing.xl,

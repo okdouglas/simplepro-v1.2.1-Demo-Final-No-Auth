@@ -32,15 +32,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <View style={styles.container}>
-      {/* Notification bell on the left */}
-      <TouchableOpacity
-        style={styles.notificationButton}
-        onPress={handleNotificationsPress}
-      >
-        <Bell size={20} color={colors.gray[700]} />
-        <View style={styles.notificationBadge} />
-      </TouchableOpacity>
-
+      {/* Title on the left */}
       <View style={styles.titleContainer}>
         {title ? (
           <Text style={styles.title}>{title}</Text>
@@ -50,6 +42,15 @@ const Header: React.FC<HeaderProps> = ({
       </View>
 
       <View style={styles.actionsContainer}>
+        {/* Notification bell on the right */}
+        <TouchableOpacity
+          style={styles.notificationButton}
+          onPress={handleNotificationsPress}
+        >
+          <Bell size={20} color={colors.gray[700]} />
+          <View style={styles.notificationBadge} />
+        </TouchableOpacity>
+
         {showExport && (
           <TouchableOpacity
             style={[styles.actionButton, styles.exportButton]}
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flex: 1,
-    alignItems: 'center', // Center the title
+    alignItems: 'flex-start', // Left align the title
   },
   title: {
     fontSize: 20,
