@@ -101,6 +101,7 @@ export default function TabLayout() {
         },
       })}
     >
+      {/* Tab order: Dashboard, Quotes, Jobs, Customers, Pipeline, Profile */}
       <Tabs.Screen
         name="index"
         options={{
