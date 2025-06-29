@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Plus, Download, Bell } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderBottomWidth: 1,
     borderBottomColor: colors.gray[200],
+    height: Platform.OS === 'ios' ? 50 : 56, // Fixed height for consistency across platforms
   },
   titleContainer: {
     flex: 1,

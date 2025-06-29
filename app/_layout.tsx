@@ -78,13 +78,14 @@ function RootLayoutNav() {
           headerBackTitle: "Back",
           headerStyle: {
             backgroundColor: colors.card,
-            height: 64, // Fixed height for consistency
+            height: Platform.OS === 'ios' ? 64 : 56, // Adjusted height for different platforms
           },
           headerShadowVisible: false,
           headerTintColor: colors.primary,
           headerTitleStyle: {
             fontWeight: '600',
             color: colors.text,
+            fontSize: Platform.OS === 'ios' ? 18 : 16, // Adjusted font size for different platforms
           },
           contentStyle: {
             backgroundColor: colors.background,
@@ -97,7 +98,9 @@ function RootLayoutNav() {
                 {children ? (
                   <>
                     <View style={[styles.titleSeparator, { backgroundColor: colors.gray[300] }]} />
-                    <Text style={[styles.headerText, { color: colors.text }]}>{children}</Text>
+                    <Text style={[styles.headerText, { color: colors.text }]} numberOfLines={1} ellipsizeMode="tail">
+                      {children}
+                    </Text>
                   </>
                 ) : (
                   <Text style={[styles.headerText, { color: colors.text }]}>SimplePro</Text>
@@ -128,10 +131,12 @@ const styles = StyleSheet.create({
   headerTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    maxWidth: '80%', // Prevent title from overflowing
   },
   headerText: {
-    fontSize: 18,
+    fontSize: Platform.OS === 'ios' ? 18 : 16,
     fontWeight: '700',
+    flexShrink: 1, // Allow text to shrink if needed
   },
   logo: {
     width: 28,

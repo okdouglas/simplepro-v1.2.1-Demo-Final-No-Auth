@@ -12,25 +12,9 @@ import { useQuoteStore } from '@/store/quoteStore';
 import { useJobStore } from '@/store/jobStore';
 import { router } from 'expo-router';
 import { 
-  BarChart3, 
-  Filter, 
-  ChevronDown, 
-  Download, 
-  Calendar, 
-  Users, 
-  Tag,
-  Search,
   TrendingUp,
-  ArrowUpRight,
-  ArrowDownRight,
   Send
 } from 'lucide-react-native';
-
-const TIME_PERIODS = ['Last 30 Days', 'Last Quarter', 'Year to Date', 'All Time'] as const;
-type TimePeriod = typeof TIME_PERIODS[number];
-
-const FILTER_OPTIONS = ['All', 'HVAC', 'Plumbing', 'Electrical', 'Remodeling'] as const;
-type FilterOption = typeof FILTER_OPTIONS[number];
 
 // Define the MonthlyData interface to match what MonthlyRevenueBarGraph expects
 interface MonthlyData {
@@ -68,10 +52,6 @@ interface PipelineStage {
 export default function FinancialsScreen() {
   const { quotes, getQuotesByStatus } = useQuoteStore();
   const { jobs } = useJobStore();
-  const [timePeriod, setTimePeriod] = useState<TimePeriod>('Last 30 Days');
-  const [showTimePeriodDropdown, setShowTimePeriodDropdown] = useState(false);
-  const [filterOption, setFilterOption] = useState<FilterOption>('All');
-  const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [stages, setStages] = useState<PipelineStage[]>(pipelineStages as PipelineStage[]);
   
@@ -95,18 +75,6 @@ export default function FinancialsScreen() {
       setRefreshing(false);
     }, 1000);
   }, []);
-
-  const selectTimePeriod = (period: TimePeriod) => {
-    setTimePeriod(period);
-    setShowTimePeriodDropdown(false);
-    // In a real app, this would filter the pipeline data by time period
-  };
-
-  const selectFilterOption = (option: FilterOption) => {
-    setFilterOption(option);
-    setShowFilterOptions(false);
-    // In a real app, this would filter the pipeline data by service type
-  };
 
   const handleAddItem = (stage: string) => {
     switch (stage) {
@@ -139,16 +107,6 @@ export default function FinancialsScreen() {
   const handleMoveItem = (itemId: string, fromStage: string, toStage: string) => {
     // In a real app, this would update the item's stage in the database
     console.log(`Moving item ${itemId} from ${fromStage} to ${toStage}`);
-  };
-
-  const handleSearch = () => {
-    // In a real app, this would open a search modal
-    console.log('Search pipeline items');
-  };
-
-  const handleExport = () => {
-    // In a real app, this would export the pipeline data
-    console.log('Exporting pipeline data');
   };
 
   const navigateToSentQuotes = () => {
@@ -219,87 +177,6 @@ export default function FinancialsScreen() {
             <View style={[styles.summaryCardIcon, { backgroundColor: colors.secondary + '20' }]}>
               <TrendingUp size={20} color={colors.secondary} />
             </View>
-          </View>
-        </View>
-        
-        {/* Pipeline Controls */}
-        <View style={styles.controlsContainer}>
-          <View style={styles.controlsLeft}>
-            <TouchableOpacity 
-              style={[styles.periodSelector, { backgroundColor: colors.card, borderColor: colors.border }]}
-              onPress={() => setShowTimePeriodDropdown(!showTimePeriodDropdown)}
-            >
-              <Text style={styles.periodSelectorText}>{timePeriod}</Text>
-              <ChevronDown size={16} color={colors.text} />
-            </TouchableOpacity>
-            
-            {showTimePeriodDropdown && (
-              <View style={[styles.dropdown, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                {TIME_PERIODS.map(period => (
-                  <TouchableOpacity 
-                    key={period}
-                    style={[
-                      styles.dropdownItem,
-                      period === timePeriod && { backgroundColor: colors.primary + '15' }
-                    ]}
-                    onPress={() => selectTimePeriod(period)}
-                  >
-                    <Text style={[
-                      styles.dropdownItemText,
-                      period === timePeriod && { color: colors.primary, fontWeight: '600' }
-                    ]}>
-                      {period}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-            
-            <TouchableOpacity 
-              style={[styles.filterSelector, { backgroundColor: colors.card, borderColor: colors.border }]}
-              onPress={() => setShowFilterOptions(!showFilterOptions)}
-            >
-              <Filter size={16} color={colors.tertiary} />
-              <Text style={styles.filterSelectorText}>{filterOption}</Text>
-            </TouchableOpacity>
-            
-            {showFilterOptions && (
-              <View style={[styles.dropdown, styles.filterDropdown, { backgroundColor: colors.card, borderColor: colors.border }]}>
-                {FILTER_OPTIONS.map(option => (
-                  <TouchableOpacity 
-                    key={option}
-                    style={[
-                      styles.dropdownItem,
-                      option === filterOption && { backgroundColor: colors.primary + '15' }
-                    ]}
-                    onPress={() => selectFilterOption(option)}
-                  >
-                    <Text style={[
-                      styles.dropdownItemText,
-                      option === filterOption && { color: colors.primary, fontWeight: '600' }
-                    ]}>
-                      {option}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            )}
-          </View>
-          
-          <View style={styles.controlsRight}>
-            <TouchableOpacity 
-              style={[styles.iconButton, { backgroundColor: colors.card, borderColor: colors.border }]}
-              onPress={handleSearch}
-            >
-              <Search size={18} color={colors.tertiary} />
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={[styles.iconButton, { backgroundColor: colors.card, borderColor: colors.border }]}
-              onPress={handleExport}
-            >
-              <Download size={18} color={colors.tertiary} />
-            </TouchableOpacity>
           </View>
         </View>
         
@@ -389,81 +266,6 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  controlsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: theme.spacing.md,
-    zIndex: 10, // Ensure dropdowns appear above other elements
-  },
-  controlsLeft: {
-    flexDirection: 'row',
-    gap: theme.spacing.sm,
-    zIndex: 20,
-  },
-  controlsRight: {
-    flexDirection: 'row',
-    gap: theme.spacing.sm,
-  },
-  periodSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    ...theme.shadows.xs,
-  },
-  periodSelectorText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.text,
-    marginRight: theme.spacing.sm,
-  },
-  filterSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    ...theme.shadows.xs,
-    gap: theme.spacing.xs,
-  },
-  filterSelectorText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.text,
-  },
-  dropdown: {
-    position: 'absolute',
-    top: 40,
-    left: 0,
-    width: 180,
-    borderRadius: theme.borderRadius.md,
-    borderWidth: 1,
-    ...theme.shadows.md,
-    zIndex: 100,
-  },
-  filterDropdown: {
-    left: 120, // Position under the filter selector
-  },
-  dropdownItem: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-  },
-  dropdownItemText: {
-    fontSize: 14,
-    color: colors.text,
-  },
-  iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.borderRadius.md,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    ...theme.shadows.xs,
   },
   actionButton: {
     paddingVertical: theme.spacing.md,

@@ -57,26 +57,6 @@ export default function CustomersScreen() {
     }
   };
   
-  const handleSendEmail = () => {
-    // In a real app, this would open an email composer
-    console.log('Send email to selected customers');
-  };
-  
-  const handleFilter = () => {
-    // In a real app, this would open a filter modal
-    console.log('Open filter modal');
-  };
-  
-  const handleExport = () => {
-    // In a real app, this would export customer data
-    console.log('Export customer data');
-  };
-  
-  const handleImport = () => {
-    // In a real app, this would import customer data
-    console.log('Import customer data');
-  };
-  
   // Filter customers by search query and segment
   const filteredCustomers = searchQuery 
     ? customers.filter(customer => 
@@ -95,14 +75,6 @@ export default function CustomersScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <Header title="Customers" showAdd onAddPress={handleAddCustomer} />
-      
-      <CustomerActionBar
-        onAddCustomer={handleAddCustomer}
-        onSendEmail={handleSendEmail}
-        onFilter={handleFilter}
-        onExport={handleExport}
-        onImport={handleImport}
-      />
       
       <View style={styles.searchContainer}>
         <View style={styles.searchInputContainer}>
